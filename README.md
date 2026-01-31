@@ -1,68 +1,52 @@
-
 # LatentMind
 
-LatentMind 是一个“前后端分离”的小型交互实验：
+LatentMind is a small **frontend–backend separated** interactive experiment.
 
-- **后端（FastAPI）**：提供 API（默认 `http://127.0.0.1:8001`）
-- **前端（纯静态 HTML/JS）**：通过 `fetch()` 调用后端 API
+- **Backend (FastAPI)**: provides a JSON API (default: `http://127.0.0.1:8001`)
+- **Frontend (static HTML/JS)**: calls the backend via `fetch()`
 
-## 1) 启动后端（API）
+## Project layout
 
-在你的 conda 环境里启动（你当前环境是 `appenv313`）：
+- `backend/`: FastAPI app + game logic + logging
+- `frontend/`: static UI (`index.html`, `main.js`, `report.html`)
+- `requirements.txt`: minimal Python dependencies
+
+## Prerequisites
+
+- Python 3.10+ 
+- `fastapi` and `uvicorn`
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 1) Start the backend API
+
+From the project root:
 
 ```bash
 cd backend
-conda activate appenv313
 uvicorn app:app --reload --port 8001
 ```
 
-验证：
-
-- 打开 `http://127.0.0.1:8001/docs` 能看到 Swagger UI
-- 打开 `http://127.0.0.1:8001/` 只会返回 JSON（这是正常的，因为它是 API 服务）
-
-## 2) 启动前端（静态页面）
-
-重要：**不要直接双击打开 `frontend/index.html`（file://）**。浏览器会因为安全策略导致请求失败，看起来像“按钮没反应”。
-
-任选其一：
-
-### 方案 A：用 Python 起一个静态服务器（推荐）
+## 2) Start the frontend (static server)
 
 ```bash
 cd frontend
 python3 -m http.server 5500
 ```
 
-然后打开：
+## 3) How to play in the browser
 
-- `http://127.0.0.1:5500/index.html`
+1. Open the UI: `http://127.0.0.1:5500/index.html`
+2. Click **Start experiment**
+3. Click **Action 0 / Action 1 / Action 2 / Hold** to play rounds
+4. After round 20, a **View report** button appears (no forced redirect)
+5. On the report page, click **Back to game** to continue the same session
 
-### 方案 B：VS Code Live Server
+Notes:
 
-用 Live Server 打开 `frontend/index.html`（端口一般是 `5500`）。
-
-## 3) 在浏览器里怎么玩
-
-1. 打开前端页面：`http://127.0.0.1:5500/index.html`
-2. 点击 **Start Experiment**
-3. 点击 **Action 0/1/2** 进行回合操作
-4. 到第 20 回合会出现 **View report** 按钮（不会强制跳转），你可以查看报告后再返回继续游戏
-
-## 常见问题排查
-
-### 1) 点按钮没反应
-
-优先检查浏览器开发者工具：
-
-- Chrome: View → Developer → Developer Tools → Console / Network
-
-常见原因：
-
-- 前端是用 `file://` 打开的（请用上面的静态服务器方式）
-- 后端没启动，或端口不一致（后端应是 `8001`）
-
-### 2) CORS 报错
-
-后端已允许 `localhost/127.0.0.1` 任意端口用于本地开发；如果你改了域名或用别的设备访问，需要相应调整 CORS。
-
+- The backend keeps game sessions in memory. If you restart the backend, old sessions are lost.
+- The frontend stores the last state in `localStorage` to make “Back to game” smoother.
