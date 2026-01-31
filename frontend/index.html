@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LatentMind</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="app">
+    <header class="header">
+      <div>
+        <div class="brand">LatentMind</div>
+        <div class="tagline">Maintain cognitive stability under uncertainty.</div>
+      </div>
+
+      <div class="header-actions">
+        <a class="link" href="report.html" id="reportLinkTop" target="_self" style="display:none;">View report</a>
+        <button class="btn btn-secondary" type="button" onclick="resetGame()">New experiment</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Start</h2>
+        <p class="muted">Click to create a new session on the backend.</p>
+        <div class="row">
+          <button class="btn btn-primary" type="button" onclick="startGame()">Start experiment</button>
+          <span class="pill" id="connectionPill">API: checking…</span>
+        </div>
+        <p class="hint">Frontend: this page • Backend API: <span class="mono" id="apiUrlLabel"></span></p>
+        <p class="hint" id="gameIdLine" style="display:none;">Game ID: <span class="mono" id="gameId"></span></p>
+      </section>
+
+      <section class="card" id="status" style="display:none;">
+        <h2>Session</h2>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Round</div><div class="stat-value" id="round"></div></div>
+          <div class="stat"><div class="stat-label">Score</div><div class="stat-value" id="score"></div></div>
+          <div class="stat"><div class="stat-label">Stability</div><div class="stat-value" id="stability"></div></div>
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <div class="actions">
+          <button class="btn btn-action" type="button" onclick="sendAction(0)">Action 0</button>
+          <button class="btn btn-action" type="button" onclick="sendAction(1)">Action 1</button>
+          <button class="btn btn-action" type="button" onclick="sendAction(2)">Action 2</button>
+          <button class="btn btn-action" type="button" onclick="sendAction(3)">Hold</button>
+        </div>
+
+        <div class="row" id="after20Row" style="display:none; margin-top: 14px;">
+          <span class="muted">Reached 20 rounds — you can view the report and still continue playing.</span>
+          <a class="btn btn-secondary" id="reportLink" href="report.html" target="_self">View report</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span class="muted">Tip: open DevTools → Console/Network if something fails.</span>
+    </footer>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

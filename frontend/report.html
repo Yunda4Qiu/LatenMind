@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LatentMind – Session Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="app">
+    <header class="header">
+      <div>
+        <div class="brand">LatentMind</div>
+        <div class="tagline">Session report</div>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-secondary" id="backLink" href="index.html">Back to game</a>
+        <a class="btn btn-primary" href="index.html" onclick="localStorage.removeItem('latentmind.session')">New experiment</a>
+      </div>
+    </header>
+
+    <main class="grid grid-report">
+      <section class="card" id="overview"></section>
+      <section class="card" id="profile"></section>
+      <section class="card" id="interpretation"></section>
+    </main>
+  </div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const gameId = params.get("game_id");
+const apiBase = params.get("api") || "http://127.0.0.1:8001";
+
+const backLink = document.getElementById("backLink");
+backLink.href = `index.html?game_id=${encodeURIComponent(gameId)}&api=${encodeURIComponent(apiBase)}`;
+
+fetch(`${apiBase}/report/${gameId}`)
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  })
+  .then(data => {
+    if (data.error) {
+      document.getElementById("overview").innerHTML = `<h2>Overview</h2><p class="muted">${data.error}</p>`;
+      return;
+    }
+    const s = data.summary;
+
+    document.getElementById("overview").innerHTML = `
+      <h2>Overview</h2>
+      <p class="muted">Game ID: <span class="mono">${gameId}</span></p>
+      <div class="stats">
+        <div class="stat"><div class="stat-label">Rounds</div><div class="stat-value">${s.rounds_played}</div></div>
+        <div class="stat"><div class="stat-label">Final score</div><div class="stat-value">${s.final_score}</div></div>
+        <div class="stat"><div class="stat-label">Avg stability</div><div class="stat-value">${s.average_stability}</div></div>
+      </div>
+    `;
+
+    document.getElementById("profile").innerHTML = `
+      <h2>Cognitive profile</h2>
+      <div class="stats">
+        <div class="stat"><div class="stat-label">Risk aversion</div><div class="stat-value">${s.final_profile.risk_aversion}</div></div>
+        <div class="stat"><div class="stat-label">Exploration</div><div class="stat-value">${s.final_profile.exploration}</div></div>
+        <div class="stat"><div class="stat-label">Consistency</div><div class="stat-value">${s.final_profile.consistency}</div></div>
+      </div>
+    `;
+
+    document.getElementById("interpretation").innerHTML = `
+      <h2>System interpretation</h2>
+      <p>${data.interpretation}</p>
+    `;
+  })
+  .catch(err => {
+    console.error("report load failed:", err);
+    document.getElementById("overview").innerText = `Failed to load report from ${apiBase}`;
+  });
+</script>
+
+</body>
+</html>
