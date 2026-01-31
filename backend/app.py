@@ -1,14 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-# Prefer package-qualified imports (avoids collisions with third-party packages
-# named like "analytics", "game", "db"). Fall back to local imports for
-# the common dev workflow: `cd backend && uvicorn app:app --reload`.
+
 try:
     from backend.analytics.report import load_session, summarize_session, interpret_profile
     from backend.game.engine import init_game, play_round
     from backend.core.schemas import ActionRequest, GameStateResponse
-except ImportError:  # pragma: no cover
+except ImportError:  
     from analytics.report import load_session, summarize_session, interpret_profile
     from game.engine import init_game, play_round
     from core.schemas import ActionRequest, GameStateResponse
@@ -17,9 +15,6 @@ app = FastAPI(title="LatentMind")
 
 app.add_middleware(
     CORSMiddleware,
-    # Dev-friendly: allow any localhost port (Live Server, Vite, etc.).
-    # If you deploy this, lock it down to your real frontend origin(s).
-    # NOTE: This is a raw string; use single backslashes for regex escapes.
     allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["*"],

@@ -2,11 +2,11 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-# Store logs in the backend folder (stable regardless of the process CWD).
+
 _BACKEND_DIR = Path(__file__).resolve().parent.parent
 LOG_PATH = _BACKEND_DIR / "behavior_log.csv"
 
-# Back-compat: some code may treat this as a string path.
+
 LOG_FILE = str(LOG_PATH)
 FIELDNAMES = [
     "timestamp",

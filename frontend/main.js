@@ -1,7 +1,5 @@
 let gameId = null;
 
-// Default to the common dev backend port. You can override via:
-//   index.html?api=http://127.0.0.1:8001
 const params = new URLSearchParams(window.location.search);
 const API_URL = params.get("api") || "http://127.0.0.1:8001";
 
